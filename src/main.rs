@@ -1,6 +1,9 @@
+mod commands;
 mod data;
 
-use clap::{Parser, Subcommand};
+use clap::Parser;
+
+use commands::constants::Commands;
 
 #[derive(Parser)]
 #[command(name = "Task Manager")]
@@ -8,14 +11,6 @@ use clap::{Parser, Subcommand};
 struct Cli {
     #[command(subcommand)]
     command: Commands,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    Add,
-    List,
-    Update,
-    Delete,
 }
 
 fn main() {
