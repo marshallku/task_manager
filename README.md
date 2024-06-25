@@ -1,5 +1,7 @@
 # Task Manager
 
+![Preview Image](https://github.com/marshall-ku/assets/assets/72745119/6aee0c1d-be5c-4dea-9979-3a7a0e4066a5)
+
 Task Manager is a simple and efficient CLI-based task manager designed to help you keep track of your tasks and improve productivity. With Task Manager, you can easily add, list, update, and delete tasks, all from the command line.
 
 ## Features
