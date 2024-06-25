@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 
-use crate::data::task::Task;
+use crate::{data::task::Task, utils::table::table_view};
 
 pub fn add_task(
     tasks: &mut Vec<Task>,
@@ -19,9 +19,7 @@ pub fn add_task(
 }
 
 pub fn list_tasks(tasks: &Vec<Task>) {
-    for task in tasks {
-        println!("{:?}", task);
-    }
+    table_view(&tasks)
 }
 
 pub fn update_task(tasks: &mut Vec<Task>, id: u32, status: String, time: f32) {
