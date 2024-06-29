@@ -80,13 +80,7 @@ Task Manager provides several commands to manage your tasks:
 ### Add a Task
 
 ```sh
-tm add "Task Name" "Status" "YYYY-MM-DD" "Priority" EstimatedHours
-```
-
-Example:
-
-```sh
-tm add "Write README" "To do" "2024-06-30" "High" 2.0
+tm add
 ```
 
 ### List Tasks
@@ -98,13 +92,13 @@ tm list
 ### Update a Task
 
 ```sh
-tm update TaskID "Status" TimeSpent
+tm update TaskID
 ```
 
 Example:
 
 ```sh
-tm update 1 "Doing" 1.5
+tm update 1
 ```
 
 ### Delete a Task
