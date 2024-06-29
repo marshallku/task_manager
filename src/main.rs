@@ -9,7 +9,10 @@ use commands::{
     functions::{add_task, delete_task, list_tasks, update_task},
 };
 use data::task::Task;
-use utils::storage::{load_tasks, save_tasks};
+use utils::{
+    input::get_input,
+    storage::{load_tasks, save_tasks},
+};
 
 #[derive(Parser)]
 #[command(name = "Task Manager")]
@@ -24,13 +27,15 @@ fn main() {
     let mut tasks: Vec<Task> = load_tasks().unwrap_or_else(|_| Vec::new());
 
     match args.command {
-        Commands::Add {
-            name,
-            status,
-            deadline,
-            priority,
-            estimated_hours,
-        } => {
+        Commands::Add => {
+            let name = get_input("Enter task name: ");
+            let status = get_input("Enter task status: ");
+            let deadline = get_input("Enter task deadline (YYYY-MM-DD): ");
+            let priority = get_input("Enter task priority: ");
+            let estimated_hours = get_input("Enter task estimated hours: ")
+                .parse::<f32>()
+                .expect("Invalid estimated hours");
+
             add_task(
                 &mut tasks,
                 name,
@@ -42,7 +47,12 @@ fn main() {
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::List => list_tasks(&tasks),
-        Commands::Update { id, status, time } => {
+        Commands::Update { id } => {
+            let status = get_input("Enter task status: ");
+            let time = get_input("Enter task time: ")
+                .parse::<f32>()
+                .expect("Invalid task time");
+
             update_task(&mut tasks, id, status, time);
             save_tasks(&tasks).expect("Failed to save tasks");
         }
