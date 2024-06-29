@@ -10,7 +10,7 @@ pub fn add_task(
     priority: String,
     estimated_hours: f32,
 ) {
-    let id = tasks.len() as u32 + 1;
+    let id = tasks.iter().map(|task| task.id).max().unwrap_or(0) + 1;
     let deadline_date =
         NaiveDate::parse_from_str(&deadline, "%Y-%m-%d").expect("Invalid date format");
     let task = Task::new(id, name, status, deadline_date, priority, estimated_hours);
