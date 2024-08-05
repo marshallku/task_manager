@@ -1,4 +1,4 @@
-use chrono::NaiveDate;
+use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -10,6 +10,9 @@ pub struct Task {
     pub priority: String,
     pub time: f32,
     pub estimated_hours: f32,
+    pub started_at: Option<NaiveDateTime>,
+    pub completed_at: Option<NaiveDateTime>,
+    pub paused_at: Option<NaiveDateTime>,
 }
 
 impl Task {
@@ -29,6 +32,9 @@ impl Task {
             priority,
             time: 0.0,
             estimated_hours,
+            started_at: None,
+            completed_at: None,
+            paused_at: None,
         }
     }
 }
