@@ -8,7 +8,7 @@ use commands::{
     constants::Commands,
     functions::{add_task, delete_task, done_task, list_tasks, pause_task, start_task},
 };
-use data::task::Task;
+use data::{status::TaskStatus, task::Task};
 use utils::{
     input::get_input,
     storage::{load_tasks, save_tasks},
@@ -35,7 +35,7 @@ fn main() {
                 .parse::<f32>()
                 .expect("Invalid estimated hours");
 
-            let status = "To do".to_string();
+            let status = TaskStatus::Todo;
 
             add_task(
                 &mut tasks,

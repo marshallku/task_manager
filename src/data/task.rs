@@ -1,11 +1,13 @@
 use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
+use super::status::TaskStatus;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
     pub id: u32,
     pub name: String,
-    pub status: String,
+    pub status: TaskStatus,
     pub deadline: NaiveDate,
     pub priority: String,
     pub time: f32,
@@ -19,7 +21,7 @@ impl Task {
     pub fn new(
         id: u32,
         name: String,
-        status: String,
+        status: TaskStatus,
         deadline: NaiveDate,
         priority: String,
         estimated_hours: f32,

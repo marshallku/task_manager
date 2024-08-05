@@ -1,4 +1,4 @@
-use crate::data::task::Task;
+use crate::data::{status::TaskStatus, task::Task};
 
 fn draw_line(
     start_character: &str,
@@ -22,6 +22,15 @@ fn draw_line(
     println!("{}", end_character);
 }
 
+fn status_to_string(status: TaskStatus) -> String {
+    match status {
+        TaskStatus::Todo => "Todo".to_string(),
+        TaskStatus::InProgress => "Doing".to_string(),
+        TaskStatus::Paused => "Paused".to_string(),
+        TaskStatus::Done => "Done".to_string(),
+    }
+}
+
 pub fn table_view(task: &Vec<Task>) {
     let headers = vec![
         "ID".to_string(),
@@ -39,7 +48,7 @@ pub fn table_view(task: &Vec<Task>) {
         vec![
             task.id.to_string(),
             task.name.clone(),
-            task.status.clone(),
+            status_to_string(task.status.clone()),
             task.deadline.to_string(),
             task.priority.clone(),
             task.estimated_hours.to_string(),

@@ -1,13 +1,16 @@
 use chrono::{NaiveDate, Utc};
 
-use crate::{data::task::Task, utils::table::table_view};
+use crate::{
+    data::{status::TaskStatus, task::Task},
+    utils::table::table_view,
+};
 
 const MINUTES_IN_HOUR: f32 = 60.0;
 
 pub fn add_task(
     tasks: &mut Vec<Task>,
     name: String,
-    status: String,
+    status: TaskStatus,
     deadline: String,
     priority: String,
     estimated_hours: f32,
@@ -26,7 +29,7 @@ pub fn list_tasks(tasks: &Vec<Task>) {
 
 pub fn start_task(tasks: &mut Vec<Task>, id: u32) {
     if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
-        task.status = "Doing".to_string();
+        task.status = TaskStatus::InProgress;
         task.started_at = Some(Utc::now().naive_utc());
         println!("Task started successfully.");
     } else {
@@ -36,6 +39,7 @@ pub fn start_task(tasks: &mut Vec<Task>, id: u32) {
 
 pub fn pause_task(tasks: &mut Vec<Task>, id: u32) {
     if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
+        task.status = TaskStatus::Paused;
         task.paused_at = Some(Utc::now().naive_utc());
         task.time = task
             .started_at
@@ -52,7 +56,7 @@ pub fn pause_task(tasks: &mut Vec<Task>, id: u32) {
 
 pub fn done_task(tasks: &mut Vec<Task>, id: u32) {
     if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
-        task.status = "Done".to_string();
+        task.status = TaskStatus::Done;
         task.completed_at = Some(Utc::now().naive_utc());
 
         // If task is not paused, calculate time.
