@@ -29,10 +29,11 @@ pub fn table_view(task: &Vec<Task>) {
         "Status".to_string(),
         "Deadline".to_string(),
         "Priority".to_string(),
-        "Estimated Hours".to_string(),
+        "Estimated (h)".to_string(),
+        "Time (h)".to_string(),
     ];
 
-    assert!(headers.len() == 6);
+    assert!(headers.len() == 7);
 
     let cells = task.iter().map(|task| {
         vec![
@@ -42,6 +43,7 @@ pub fn table_view(task: &Vec<Task>) {
             task.deadline.to_string(),
             task.priority.clone(),
             task.estimated_hours.to_string(),
+            task.time.to_string(),
         ]
     });
 
