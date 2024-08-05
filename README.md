@@ -89,16 +89,18 @@ tm add
 tm list
 ```
 
-### Update a Task
+### Start / Pause / Done a Task
 
 ```sh
-tm update TaskID
+tm start TaskID
+tm pause TaskID
+tm done TaskID
 ```
 
 Example:
 
 ```sh
-tm update 1
+tm start 1
 ```
 
 ### Delete a Task
