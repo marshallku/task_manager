@@ -24,16 +24,6 @@ pub fn list_tasks(tasks: &Vec<Task>) {
     table_view(&tasks)
 }
 
-pub fn update_task(tasks: &mut Vec<Task>, id: u32, status: String, time: f32) {
-    if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
-        task.status = status;
-        task.time = time;
-        println!("Task updated successfully.");
-    } else {
-        println!("Task not found.");
-    }
-}
-
 pub fn start_task(tasks: &mut Vec<Task>, id: u32) {
     if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
         task.status = "Doing".to_string();

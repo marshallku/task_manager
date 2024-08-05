@@ -6,9 +6,7 @@ use clap::Parser;
 
 use commands::{
     constants::Commands,
-    functions::{
-        add_task, delete_task, done_task, list_tasks, pause_task, start_task, update_task,
-    },
+    functions::{add_task, delete_task, done_task, list_tasks, pause_task, start_task},
 };
 use data::task::Task;
 use utils::{
@@ -50,15 +48,6 @@ fn main() {
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::List => list_tasks(&tasks),
-        Commands::Update { id } => {
-            let status = get_input("Enter task status: ");
-            let time = get_input("Enter task time: ")
-                .parse::<f32>()
-                .expect("Invalid task time");
-
-            update_task(&mut tasks, id, status, time);
-            save_tasks(&tasks).expect("Failed to save tasks");
-        }
         Commands::Start { id } => {
             start_task(&mut tasks, id);
             save_tasks(&tasks).expect("Failed to save tasks");
