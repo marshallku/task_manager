@@ -5,7 +5,7 @@ use crate::{
     utils::table::table_view,
 };
 
-const MINUTES_IN_HOUR: f32 = 60.0;
+const HOUR_IN_MINUTES: f32 = 60.0;
 
 pub fn add_task(
     tasks: &mut Vec<Task>,
@@ -42,11 +42,11 @@ pub fn pause_task(tasks: &mut Vec<Task>, id: u32) {
         task.status = TaskStatus::Paused;
         task.paused_at = Some(Utc::now().naive_utc());
         task.time = task
-            .started_at
+            .completed_at
             .unwrap()
-            .signed_duration_since(task.paused_at.unwrap())
+            .signed_duration_since(task.started_at.unwrap())
             .num_minutes() as f32
-            * MINUTES_IN_HOUR;
+            / HOUR_IN_MINUTES;
         task.started_at = None;
         println!("Task paused successfully.");
     } else {
@@ -62,11 +62,11 @@ pub fn done_task(tasks: &mut Vec<Task>, id: u32) {
         // If task is not paused, calculate time.
         if task.paused_at.is_none() {
             task.time = task
-                .started_at
+                .completed_at
                 .unwrap()
-                .signed_duration_since(task.completed_at.unwrap())
+                .signed_duration_since(task.started_at.unwrap())
                 .num_minutes() as f32
-                * MINUTES_IN_HOUR;
+                / HOUR_IN_MINUTES;
         }
 
         task.started_at = None;
