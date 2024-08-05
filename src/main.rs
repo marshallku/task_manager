@@ -2,6 +2,9 @@ mod commands;
 mod data;
 mod utils;
 
+use core::panic;
+
+use chrono::{NaiveDate, Utc};
 use clap::Parser;
 
 use commands::{
@@ -9,10 +12,8 @@ use commands::{
     functions::{add_task, delete_task, done_task, list_tasks, pause_task, start_task},
 };
 use data::{status::TaskStatus, task::Task};
-use utils::{
-    input::get_input,
-    storage::{load_tasks, save_tasks},
-};
+use inquire::{CustomType, DateSelect, Select, Text};
+use utils::storage::{load_tasks, save_tasks};
 
 #[derive(Parser)]
 #[command(name = "Task Manager")]
@@ -28,12 +29,31 @@ fn main() {
 
     match args.command {
         Commands::Add => {
-            let name = get_input("Enter task name: ");
-            let deadline = get_input("Enter task deadline (YYYY-MM-DD): ");
-            let priority = get_input("Enter task priority: ");
-            let estimated_hours = get_input("Enter task estimated hours: ")
-                .parse::<f32>()
-                .expect("Invalid estimated hours");
+            let name = match Text::new("Enter task name: ").prompt() {
+                Ok(name) => name,
+                Err(_) => panic!("Failed to get task name"),
+            };
+            let deadline = match DateSelect::new("Enter task deadline (YYYY-MM-DD): ")
+                .with_min_date(NaiveDate::from(Utc::now().naive_utc()))
+                .prompt()
+            {
+                Ok(deadline) => deadline,
+                Err(_) => panic!("Failed to get task deadline"),
+            };
+            let priority = match Select::new("Enter task priority: ", vec!["Low", "Medium", "High"])
+                .prompt()
+            {
+                Ok(priority) => priority.to_string(),
+                Err(_) => panic!("Failed to get task priority"),
+            };
+            let estimated_hours: f32 = match CustomType::<f32>::new("Enter task estimated hours: ")
+                .with_formatter(&|i| format!("{:.2}h", i))
+                .with_error_message("Please type a valid number")
+                .prompt()
+            {
+                Ok(estimated_hours) => estimated_hours,
+                Err(_) => panic!("Failed to get task estimated hours"),
+            };
 
             let status = TaskStatus::Todo;
 

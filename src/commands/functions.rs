@@ -11,14 +11,12 @@ pub fn add_task(
     tasks: &mut Vec<Task>,
     name: String,
     status: TaskStatus,
-    deadline: String,
+    deadline: NaiveDate,
     priority: String,
     estimated_hours: f32,
 ) {
     let id = tasks.iter().map(|task| task.id).max().unwrap_or(0) + 1;
-    let deadline_date =
-        NaiveDate::parse_from_str(&deadline, "%Y-%m-%d").expect("Invalid date format");
-    let task = Task::new(id, name, status, deadline_date, priority, estimated_hours);
+    let task = Task::new(id, name, status, deadline, priority, estimated_hours);
     tasks.push(task);
     println!("Task added successfully.");
 }
