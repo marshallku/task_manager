@@ -31,12 +31,13 @@ fn main() {
     match args.command {
         Commands::Add => {
             let name = get_input("Enter task name: ");
-            let status = get_input("Enter task status: ");
             let deadline = get_input("Enter task deadline (YYYY-MM-DD): ");
             let priority = get_input("Enter task priority: ");
             let estimated_hours = get_input("Enter task estimated hours: ")
                 .parse::<f32>()
                 .expect("Invalid estimated hours");
+
+            let status = "To do".to_string();
 
             add_task(
                 &mut tasks,
