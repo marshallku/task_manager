@@ -57,14 +57,25 @@ pub fn done_task(tasks: &mut Vec<Task>, id: u32) {
         task.status = TaskStatus::Done;
         task.completed_at = Some(Utc::now().naive_utc());
 
-        // If task is not paused, calculate time.
-        if task.paused_at.is_none() {
+        // Calculate time spent on task
+        // If task is paused, calculate time spent until it was paused
+        if task.paused_at.is_some() && task.started_at.is_some() {
             task.time = task
                 .completed_at
                 .unwrap()
                 .signed_duration_since(task.started_at.unwrap())
                 .num_minutes() as f32
                 / HOUR_IN_MINUTES;
+        // If task is not paused, calculate time spent until it was completed
+        } else if task.started_at.is_some() {
+            task.time = task
+                .completed_at
+                .unwrap()
+                .signed_duration_since(task.started_at.unwrap())
+                .num_minutes() as f32
+                / HOUR_IN_MINUTES;
+        } else {
+            task.time = task.estimated_hours;
         }
 
         task.started_at = None;
