@@ -15,7 +15,7 @@ fn find_task_mut<'a>(tasks: &'a mut Vec<Task>, id: u32) -> Result<&'a mut Task, 
         .ok_or_else(|| "Task not found".into())
 }
 
-fn calculate_task_time(task: &Task) -> Result<f32, Box<dyn Error>> {
+pub fn calculate_task_time(task: &Task) -> Result<f32, Box<dyn Error>> {
     if task.started_at.is_none() {
         return Ok(task.estimated_hours);
     }
