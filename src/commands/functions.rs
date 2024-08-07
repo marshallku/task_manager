@@ -16,6 +16,9 @@ fn find_task_mut<'a>(tasks: &'a mut Vec<Task>, id: u32) -> Result<&'a mut Task, 
 }
 
 fn calculate_task_time(task: &Task) -> Result<f32, Box<dyn Error>> {
+    if task.started_at.is_none() {
+        return Ok(task.estimated_hours);
+    }
     let start_time = task.started_at.ok_or("No start time")?;
     let end_time = task.paused_at.or(task.completed_at).ok_or("No end time")?;
     Ok(end_time.signed_duration_since(start_time).num_minutes() as f32 / HOUR_IN_MINUTES)
