@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use chrono::{NaiveDate, Utc};
 
 use crate::{
@@ -6,6 +8,13 @@ use crate::{
 };
 
 const HOUR_IN_MINUTES: f32 = 60.0;
+
+fn find_task_mut<'a>(tasks: &'a mut Vec<Task>, id: u32) -> Result<&'a mut Task, Box<dyn Error>> {
+    tasks
+        .iter_mut()
+        .find(|task| task.id == id)
+        .ok_or_else(|| "Task not found".into())
+}
 
 pub fn add_task(
     tasks: &mut Vec<Task>,
@@ -26,7 +35,7 @@ pub fn list_tasks(tasks: &Vec<Task>) {
 }
 
 pub fn start_task(tasks: &mut Vec<Task>, id: u32) {
-    if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
+    if let Ok(task) = find_task_mut(tasks, id) {
         task.status = TaskStatus::InProgress;
         task.started_at = Some(Utc::now().naive_utc());
         println!("Task started successfully.");
@@ -36,7 +45,7 @@ pub fn start_task(tasks: &mut Vec<Task>, id: u32) {
 }
 
 pub fn pause_task(tasks: &mut Vec<Task>, id: u32) {
-    if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
+    if let Ok(task) = find_task_mut(tasks, id) {
         task.status = TaskStatus::Paused;
         task.paused_at = Some(Utc::now().naive_utc());
         task.time = task
@@ -53,7 +62,7 @@ pub fn pause_task(tasks: &mut Vec<Task>, id: u32) {
 }
 
 pub fn done_task(tasks: &mut Vec<Task>, id: u32) {
-    if let Some(task) = tasks.iter_mut().find(|task| task.id == id) {
+    if let Ok(task) = find_task_mut(tasks, id) {
         task.status = TaskStatus::Done;
         task.completed_at = Some(Utc::now().naive_utc());
 
