@@ -64,24 +64,29 @@ fn main() {
                 deadline,
                 priority,
                 estimated_hours,
-            );
+            )
+            .unwrap_or_else(|err| panic!("Failed to add task: {}", err));
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::List => list_tasks(&tasks),
         Commands::Start { id } => {
-            start_task(&mut tasks, id);
+            start_task(&mut tasks, id)
+                .unwrap_or_else(|err| panic!("Failed to start task: {}", err));
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::Pause { id } => {
-            pause_task(&mut tasks, id);
+            pause_task(&mut tasks, id)
+                .unwrap_or_else(|err| panic!("Failed to pause task: {}", err));
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::Done { id } => {
-            done_task(&mut tasks, id);
+            done_task(&mut tasks, id)
+                .unwrap_or_else(|err| panic!("Failed to complete task: {}", err));
             save_tasks(&tasks).expect("Failed to save tasks");
         }
         Commands::Delete { id } => {
-            delete_task(&mut tasks, id);
+            delete_task(&mut tasks, id)
+                .unwrap_or_else(|err| panic!("Failed to delete task: {}", err));
             save_tasks(&tasks).expect("Failed to save tasks");
         }
     }
