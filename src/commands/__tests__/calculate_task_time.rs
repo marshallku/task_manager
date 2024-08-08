@@ -2,7 +2,10 @@
 mod tests {
     use crate::{
         commands::functions::calculate_task_time,
-        data::{status::TaskStatus, task::Task},
+        data::{
+            status::TaskStatus,
+            task::{Task, TaskError},
+        },
     };
 
     use chrono::{NaiveDate, NaiveDateTime};
@@ -94,6 +97,9 @@ mod tests {
 
         let result = calculate_task_time(&task);
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err().to_string(), "No end time");
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            TaskError::InvalidState("No end time".to_string()).to_string()
+        );
     }
 }
