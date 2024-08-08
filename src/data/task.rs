@@ -1,7 +1,16 @@
 use chrono::{NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
+use thiserror::Error;
 
 use super::status::TaskStatus;
+
+#[derive(Error, Debug)]
+pub enum TaskError {
+    #[error("Task not found")]
+    NotFound,
+    #[error("Invalid task state: {0}")]
+    InvalidState(String),
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Task {
