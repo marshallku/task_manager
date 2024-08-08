@@ -16,7 +16,7 @@ use data::{
     task::{Task, TaskError},
 };
 use inquire::{CustomType, DateSelect, Select, Text};
-use utils::storage::{load_tasks, save_tasks};
+use utils::storage::{get_file_path, load_tasks, save_tasks};
 
 #[derive(Parser)]
 #[command(name = "Task Manager")]
@@ -27,8 +27,9 @@ struct Cli {
 }
 
 fn main() {
+    let path = get_file_path();
     let args = Cli::parse();
-    let mut tasks: Vec<Task> = load_tasks().unwrap_or_else(|_| Vec::new());
+    let mut tasks: Vec<Task> = load_tasks(path.clone()).unwrap_or_else(|_| Vec::new());
 
     let result = match args.command {
         Commands::Add => add_task_interactive(&mut tasks),
@@ -44,7 +45,7 @@ fn main() {
 
     match result {
         Ok(_) => {
-            save_tasks(&tasks).expect("Failed to save tasks");
+            save_tasks(&tasks, path).expect("Failed to save tasks");
         }
         Err(err) => handle_error(err),
     }

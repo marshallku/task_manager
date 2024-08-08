@@ -13,16 +13,14 @@ pub fn get_file_path() -> PathBuf {
     dir
 }
 
-pub fn save_tasks(tasks: &Vec<Task>) -> io::Result<()> {
-    let file_path = get_file_path();
+pub fn save_tasks(tasks: &Vec<Task>, file_path: PathBuf) -> io::Result<()> {
     let file = File::create(file_path)?;
     let writer = BufWriter::new(file);
     serde_json::to_writer(writer, &tasks)?;
     Ok(())
 }
 
-pub fn load_tasks() -> io::Result<Vec<Task>> {
-    let file_path = get_file_path();
+pub fn load_tasks(file_path: PathBuf) -> io::Result<Vec<Task>> {
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
     let tasks = serde_json::from_reader(reader)?;
