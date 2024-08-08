@@ -11,7 +11,10 @@ use commands::{
     constants::Commands,
     functions::{add_task, delete_task, done_task, list_tasks, pause_task, start_task},
 };
-use data::{status::TaskStatus, task::Task};
+use data::{
+    status::TaskStatus,
+    task::{Task, TaskError},
+};
 use inquire::{CustomType, DateSelect, Select, Text};
 use utils::storage::{load_tasks, save_tasks};
 
@@ -57,37 +60,82 @@ fn main() {
 
             let status = TaskStatus::Todo;
 
-            add_task(
+            match add_task(
                 &mut tasks,
                 name,
                 status,
                 deadline,
                 priority,
                 estimated_hours,
-            )
-            .unwrap_or_else(|err| panic!("Failed to add task: {}", err));
-            save_tasks(&tasks).expect("Failed to save tasks");
+            ) {
+                Ok(_) => {
+                    save_tasks(&tasks).expect("Failed to save tasks");
+                }
+                Err(err) => match err {
+                    TaskError::InvalidState(state) => {
+                        eprintln!("Invalid task state: {}", state);
+                    }
+                    _ => {
+                        eprintln!("Failed to add task: {}", err);
+                    }
+                },
+            }
         }
         Commands::List => list_tasks(&tasks),
-        Commands::Start { id } => {
-            start_task(&mut tasks, id)
-                .unwrap_or_else(|err| panic!("Failed to start task: {}", err));
-            save_tasks(&tasks).expect("Failed to save tasks");
-        }
+        Commands::Start { id } => match start_task(&mut tasks, id) {
+            Ok(_) => {
+                save_tasks(&tasks).expect("Failed to save tasks");
+            }
+            Err(err) => match err {
+                TaskError::NotFound => {
+                    eprintln!("Task not found");
+                }
+                TaskError::InvalidState(state) => {
+                    eprintln!("Invalid task state: {}", state);
+                }
+            },
+        },
         Commands::Pause { id } => {
-            pause_task(&mut tasks, id)
-                .unwrap_or_else(|err| panic!("Failed to pause task: {}", err));
+            match pause_task(&mut tasks, id) {
+                Ok(_) => {
+                    save_tasks(&tasks).expect("Failed to save tasks");
+                }
+                Err(err) => match err {
+                    TaskError::NotFound => {
+                        eprintln!("Task not found");
+                    }
+                    TaskError::InvalidState(state) => {
+                        eprintln!("Invalid task state: {}", state);
+                    }
+                },
+            }
             save_tasks(&tasks).expect("Failed to save tasks");
         }
-        Commands::Done { id } => {
-            done_task(&mut tasks, id)
-                .unwrap_or_else(|err| panic!("Failed to complete task: {}", err));
-            save_tasks(&tasks).expect("Failed to save tasks");
-        }
-        Commands::Delete { id } => {
-            delete_task(&mut tasks, id)
-                .unwrap_or_else(|err| panic!("Failed to delete task: {}", err));
-            save_tasks(&tasks).expect("Failed to save tasks");
-        }
+        Commands::Done { id } => match done_task(&mut tasks, id) {
+            Ok(_) => {
+                save_tasks(&tasks).expect("Failed to save tasks");
+            }
+            Err(err) => match err {
+                TaskError::NotFound => {
+                    eprintln!("Task not found");
+                }
+                TaskError::InvalidState(state) => {
+                    eprintln!("Invalid task state: {}", state);
+                }
+            },
+        },
+        Commands::Delete { id } => match delete_task(&mut tasks, id) {
+            Ok(_) => {
+                save_tasks(&tasks).expect("Failed to save tasks");
+            }
+            Err(err) => match err {
+                TaskError::NotFound => {
+                    eprintln!("Task not found");
+                }
+                TaskError::InvalidState(state) => {
+                    eprintln!("Invalid task state: {}", state);
+                }
+            },
+        },
     }
 }
